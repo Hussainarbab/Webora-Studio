@@ -1,0 +1,1891 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hussain Web Solutions | Web Development &amp; Web Applications</title>
+<meta name="description" content="Hussain Web Solutions builds modern websites and web applications using React.js, Next.js, JavaScript and WordPress for businesses, startups and professionals.">
+<meta name="theme-color" content="#050810">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#05070d;
+    --bg-1:#080b14;
+    --bg-2:#0b0f1c;
+    --card:rgba(255,255,255,0.035);
+    --card-hover:rgba(255,255,255,0.06);
+    --border:rgba(255,255,255,0.09);
+    --border-bright:rgba(90,165,255,0.4);
+    --blue:#3b82f6;
+    --blue-bright:#5aa5ff;
+    --cyan:#22d3ee;
+    --text:#f4f7fb;
+    --text-muted:#9aa7bd;
+    --text-dim:#5f6b80;
+    --radius:16px;
+    --maxw:1240px;
+    --font-display:'Space Grotesk',sans-serif;
+    --font-body:'Inter',sans-serif;
+    --font-mono:'JetBrains Mono',monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    *{animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important;}
+  }
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--font-body);
+    line-height:1.6;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  img{max-width:100%;display:block;}
+  a{color:inherit;text-decoration:none;}
+  button{font-family:inherit;cursor:pointer;}
+  ul{list-style:none;}
+
+  /* background grid texture */
+  .grid-bg{
+    position:fixed;inset:0;z-index:0;pointer-events:none;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+    background-size:64px 64px;
+    mask-image:radial-gradient(ellipse 80% 60% at 50% 0%, black 0%, transparent 75%);
+  }
+  .glow-orb{
+    position:fixed;border-radius:50%;filter:blur(120px);pointer-events:none;z-index:0;opacity:0.35;
+  }
+  .glow-1{width:600px;height:600px;top:-200px;left:-100px;background:radial-gradient(circle,var(--blue) 0%, transparent 70%);}
+  .glow-2{width:500px;height:500px;top:400px;right:-200px;background:radial-gradient(circle,var(--cyan) 0%, transparent 70%);opacity:0.18;}
+
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 28px;position:relative;z-index:1;}
+  section{position:relative;z-index:1;}
+
+  .eyebrow{
+    font-family:var(--font-mono);
+    font-size:12.5px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--blue-bright);
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom:16px;
+  }
+  .eyebrow::before{content:'';width:6px;height:6px;border-radius:2px;background:var(--blue-bright);box-shadow:0 0 10px var(--blue-bright);}
+
+  h1,h2,h3,h4{font-family:var(--font-display);font-weight:600;letter-spacing:-0.02em;color:var(--text);}
+  h2{font-size:clamp(28px,4vw,42px);}
+  .section-desc{color:var(--text-muted);font-size:16px;max-width:560px;margin-top:14px;}
+  .section-head{margin-bottom:52px;}
+
+  /* ---------- Buttons ---------- */
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    padding:14px 26px;border-radius:10px;font-weight:600;font-size:14.5px;
+    border:1px solid transparent;transition:transform .25s ease, box-shadow .25s ease, border-color .25s ease, background .25s ease;
+    white-space:nowrap;
+  }
+  .btn-primary{
+    background:linear-gradient(135deg,var(--blue) 0%, #2563eb 100%);
+    color:#fff;
+    box-shadow:0 0 0 1px rgba(59,130,246,0.3) inset, 0 8px 24px -8px rgba(59,130,246,0.6);
+  }
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 0 0 1px rgba(59,130,246,0.5) inset, 0 12px 30px -6px rgba(59,130,246,0.75);}
+  .btn-ghost{
+    background:var(--card);
+    color:var(--text);
+    border:1px solid var(--border);
+    backdrop-filter:blur(8px);
+  }
+  .btn-ghost:hover{border-color:var(--border-bright);background:var(--card-hover);transform:translateY(-2px);}
+  .btn-sm{padding:10px 18px;font-size:13.5px;}
+  .btn:focus-visible{outline:2px solid var(--blue-bright);outline-offset:3px;}
+
+  /* ---------- Navbar ---------- */
+  header{
+    position:fixed;top:0;left:0;right:0;z-index:100;
+    padding:16px 0;
+    transition:background .3s ease, border-color .3s ease, padding .3s ease;
+    border-bottom:1px solid transparent;
+  }
+  header.scrolled{
+    background:rgba(5,7,13,0.78);
+    backdrop-filter:blur(14px) saturate(140%);
+    border-bottom:1px solid var(--border);
+    padding:12px 0;
+  }
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;}
+  .logo{display:flex;align-items:center;gap:10px;font-family:var(--font-display);font-weight:700;font-size:18px;letter-spacing:-0.01em;}
+  .logo-mark{
+    width:36px;height:36px;border-radius:9px;
+    background:linear-gradient(135deg,var(--blue) 0%, var(--cyan) 100%);
+    display:flex;align-items:center;justify-content:center;
+    font-family:var(--font-mono);font-weight:600;font-size:14px;color:#04070d;
+    box-shadow:0 4px 18px -4px rgba(59,130,246,0.7);
+  }
+  .logo-sub{display:block;font-family:var(--font-mono);font-size:10px;color:var(--text-dim);font-weight:400;letter-spacing:0.06em;margin-top:1px;}
+  .nav-links{display:flex;align-items:center;gap:36px;}
+  .nav-links a{
+    font-size:14.5px;color:var(--text-muted);font-weight:500;position:relative;padding:4px 0;transition:color .2s ease;
+  }
+  .nav-links a::after{
+    content:'';position:absolute;left:0;bottom:-2px;width:0;height:1.5px;background:var(--blue-bright);transition:width .25s ease;
+  }
+  .nav-links a:hover{color:var(--text);}
+  .nav-links a:hover::after{width:100%;}
+  .nav-actions{display:flex;align-items:center;gap:18px;}
+  .hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;padding:6px;z-index:120;}
+  .hamburger span{width:22px;height:2px;background:var(--text);transition:transform .3s ease, opacity .3s ease;}
+  .hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+  .hamburger.open span:nth-child(2){opacity:0;}
+  .hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+
+  .mobile-menu{
+    position:fixed;inset:0;background:rgba(5,7,13,0.98);backdrop-filter:blur(20px);
+    z-index:110;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:30px;
+    opacity:0;pointer-events:none;transition:opacity .3s ease;
+  }
+  .mobile-menu.open{opacity:1;pointer-events:auto;}
+  .mobile-menu a{font-family:var(--font-display);font-size:26px;font-weight:600;}
+
+  /* ---------- Hero ---------- */
+  .hero{
+    padding:168px 0 100px;
+    display:grid;grid-template-columns:1.05fr 0.95fr;gap:56px;align-items:center;
+  }
+  .hero-headline{
+    font-size:clamp(38px,5.4vw,60px);
+    line-height:1.08;
+    font-family:var(--font-display);
+    font-weight:700;
+    letter-spacing:-0.03em;
+  }
+  .hero-headline .accent{
+    background:linear-gradient(100deg,var(--blue-bright) 10%,var(--cyan) 60%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .hero-sub{margin-top:22px;font-size:17px;color:var(--text-muted);max-width:480px;}
+  .hero-actions{display:flex;gap:16px;margin-top:36px;flex-wrap:wrap;}
+  .trust-label{
+    margin-top:40px;display:flex;align-items:center;gap:10px;font-family:var(--font-mono);font-size:12.5px;color:var(--text-dim);
+  }
+  .trust-label .dot{width:7px;height:7px;border-radius:50%;background:#34d399;box-shadow:0 0 8px #34d399;animation:pulse 2s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+
+  /* hero visual: terminal + floating cards */
+  .hero-visual{position:relative;height:440px;}
+  .terminal{
+    position:absolute;top:0;left:0;width:100%;max-width:440px;
+    background:linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02));
+    border:1px solid var(--border);border-radius:14px;
+    box-shadow:0 30px 60px -20px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.02) inset;
+    backdrop-filter:blur(16px);
+    overflow:hidden;
+  }
+  .terminal-bar{display:flex;align-items:center;gap:7px;padding:12px 16px;border-bottom:1px solid var(--border);background:rgba(255,255,255,0.02);}
+  .terminal-bar span{width:10px;height:10px;border-radius:50%;background:#3a3f4b;}
+  .terminal-bar span:nth-child(1){background:#ff5f57;}
+  .terminal-bar span:nth-child(2){background:#febc2e;}
+  .terminal-bar span:nth-child(3){background:#28c840;}
+  .terminal-title{margin-left:8px;font-family:var(--font-mono);font-size:11.5px;color:var(--text-dim);}
+  .terminal-body{padding:22px 20px;font-family:var(--font-mono);font-size:13.5px;line-height:1.9;color:#c9d4e3;min-height:220px;}
+  .terminal-body .c1{color:#6b90c4;}
+  .terminal-body .c2{color:var(--cyan);}
+  .terminal-body .c3{color:#e0a96d;}
+  .terminal-body .cursor{display:inline-block;width:8px;height:15px;background:var(--blue-bright);vertical-align:middle;animation:blink 1s steps(1) infinite;}
+  @keyframes blink{50%{opacity:0;}}
+
+  .float-card{
+    position:absolute;padding:14px 18px;border-radius:12px;
+    background:rgba(15,20,32,0.75);border:1px solid var(--border);backdrop-filter:blur(14px);
+    box-shadow:0 20px 40px -16px rgba(0,0,0,0.55);
+    font-family:var(--font-mono);font-size:12.5px;
+    animation:floaty 6s ease-in-out infinite;
+  }
+  .float-card.fc1{bottom:18px;left:-10px;animation-delay:0s;}
+  .float-card.fc2{top:30px;right:-14px;animation-delay:1.4s;}
+  .float-card.fc3{bottom:74px;right:20px;animation-delay:2.8s;}
+  .float-card .label{color:var(--text-dim);font-size:10.5px;text-transform:uppercase;letter-spacing:0.08em;}
+  .float-card .value{color:var(--text);font-weight:600;font-size:15px;margin-top:2px;font-family:var(--font-display);}
+  @keyframes floaty{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+
+  /* ---------- Reveal on scroll ---------- */
+  .reveal{opacity:0;transform:translateY(24px);transition:opacity .7s cubic-bezier(.2,.7,.3,1), transform .7s cubic-bezier(.2,.7,.3,1);}
+  .reveal.in{opacity:1;transform:translateY(0);}
+
+  /* ---------- Generic section spacing ---------- */
+  .section{padding:120px 0;}
+  .section-tight{padding:100px 0;}
+  .border-top{border-top:1px solid var(--border);}
+
+  /* ---------- Cards grid ---------- */
+  .grid{display:grid;gap:22px;}
+  .grid-3{grid-template-columns:repeat(3,1fr);}
+  .grid-4{grid-template-columns:repeat(4,1fr);}
+  .grid-2{grid-template-columns:repeat(2,1fr);}
+
+  .card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:30px 26px;
+    transition:transform .3s ease, border-color .3s ease, background .3s ease, box-shadow .3s ease;
+  }
+  .card:hover{transform:translateY(-5px);border-color:var(--border-bright);background:var(--card-hover);box-shadow:0 20px 40px -20px rgba(59,130,246,0.35);}
+
+  .service-icon{
+    width:46px;height:46px;border-radius:11px;
+    background:linear-gradient(135deg,rgba(59,130,246,0.18),rgba(34,211,238,0.1));
+    border:1px solid rgba(90,165,255,0.25);
+    display:flex;align-items:center;justify-content:center;margin-bottom:20px;
+    color:var(--blue-bright);
+  }
+  .card h3{font-size:18.5px;margin-bottom:10px;}
+  .card p{color:var(--text-muted);font-size:14.5px;}
+
+  /* ---------- Tech badges ---------- */
+  .tech-grid{display:flex;flex-wrap:wrap;gap:14px;}
+  .tech-badge{
+    display:flex;align-items:center;gap:10px;
+    padding:14px 20px;border-radius:11px;
+    background:var(--card);border:1px solid var(--border);
+    font-family:var(--font-mono);font-size:14px;font-weight:500;
+    transition:all .25s ease;
+  }
+  .tech-badge:hover{border-color:var(--border-bright);transform:translateY(-3px);box-shadow:0 10px 26px -14px rgba(59,130,246,0.5);}
+  .tech-dot{width:8px;height:8px;border-radius:50%;background:var(--blue-bright);}
+
+  /* ---------- Projects ---------- */
+  .project-card{
+    border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);background:var(--card);
+    transition:transform .35s ease, border-color .3s ease;
+  }
+  .project-card:hover{transform:translateY(-6px);border-color:var(--border-bright);}
+  .project-thumb{
+    height:190px;position:relative;overflow:hidden;
+    background:linear-gradient(135deg,#0b1424,#0e1b2f 40%, #0a1a22 100%);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .project-thumb::before{
+    content:'';position:absolute;inset:0;
+    background-image:linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+    background-size:24px 24px;
+    mask-image:radial-gradient(ellipse 70% 70% at 50% 50%, black 0%, transparent 80%);
+  }
+  .project-thumb .ph-code{
+    font-family:var(--font-mono);color:rgba(90,165,255,0.55);font-size:13px;z-index:1;
+  }
+  .project-body{padding:22px 22px 24px;}
+  .project-body h3{font-size:17.5px;margin-bottom:8px;}
+  .project-body p{color:var(--text-muted);font-size:14px;margin-bottom:14px;}
+  .project-tags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px;}
+  .tag{
+    font-family:var(--font-mono);font-size:11px;padding:5px 10px;border-radius:6px;
+    background:rgba(90,165,255,0.09);color:var(--blue-bright);border:1px solid rgba(90,165,255,0.2);
+  }
+  .project-actions{display:flex;gap:10px;}
+
+  /* ---------- Process timeline ---------- */
+  .process-track{position:relative;display:grid;grid-template-columns:repeat(4,1fr);gap:24px;}
+  .process-track::before{
+    content:'';position:absolute;top:27px;left:6%;right:6%;height:1px;
+    background:linear-gradient(90deg, transparent, var(--border-bright) 20%, var(--border-bright) 80%, transparent);
+    z-index:0;
+  }
+  .process-line-fill{
+    position:absolute;top:27px;left:6%;height:1px;width:0%;
+    background:linear-gradient(90deg,var(--blue-bright),var(--cyan));
+    z-index:0;transition:width 1.4s cubic-bezier(.2,.7,.3,1);
+  }
+  .process-step{position:relative;z-index:1;}
+  .process-num{
+    width:54px;height:54px;border-radius:50%;
+    background:var(--bg-1);border:1px solid var(--border-bright);
+    display:flex;align-items:center;justify-content:center;
+    font-family:var(--font-mono);font-weight:600;color:var(--blue-bright);font-size:14px;
+    margin-bottom:22px;
+  }
+  .process-step h3{font-size:18px;margin-bottom:8px;}
+  .process-step p{color:var(--text-muted);font-size:14px;}
+
+  /* ---------- About ---------- */
+  .about-grid{display:grid;grid-template-columns:0.8fr 1.2fr;gap:56px;align-items:center;}
+  .portrait{
+    aspect-ratio:1/1.05;border-radius:20px;
+    background:linear-gradient(150deg,rgba(59,130,246,0.16),rgba(34,211,238,0.06));
+    border:1px solid var(--border);
+    display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;
+  }
+  .portrait-inner{
+    width:78%;height:78%;border-radius:16px;border:1px dashed var(--border-bright);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--text-dim);
+    font-family:var(--font-mono);font-size:12.5px;text-align:center;padding:20px;
+  }
+  .portrait-inner .avatar-mark{
+    width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--cyan));
+    display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:700;font-size:24px;color:#04070d;
+  }
+  .about-skills{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px;}
+  .skill-pill{
+    font-family:var(--font-mono);font-size:12.5px;padding:8px 14px;border-radius:20px;
+    background:var(--card);border:1px solid var(--border);color:var(--text-muted);
+  }
+
+  /* ---------- Stats ---------- */
+  .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;}
+  .stat-card{
+    text-align:center;padding:34px 20px;border-radius:var(--radius);
+    background:var(--card);border:1px solid var(--border);
+  }
+  .stat-num{font-family:var(--font-display);font-size:clamp(28px,3.4vw,38px);font-weight:700;
+    background:linear-gradient(120deg,var(--blue-bright),var(--cyan));-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .stat-label{color:var(--text-muted);font-size:13.5px;margin-top:6px;font-family:var(--font-mono);}
+
+  /* ---------- Testimonials ---------- */
+  .testi-card{
+    padding:30px 26px;border-radius:var(--radius);background:var(--card);border:1px solid var(--border);
+    display:flex;flex-direction:column;gap:18px;
+  }
+  .testi-quote{color:var(--text-dim);font-size:14.5px;font-style:italic;line-height:1.7;}
+  .testi-who{display:flex;align-items:center;gap:12px;padding-top:14px;border-top:1px solid var(--border);}
+  .testi-avatar{width:38px;height:38px;border-radius:50%;background:var(--bg-1);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:11px;color:var(--text-dim);}
+  .testi-name{font-size:13.5px;color:var(--text-dim);font-family:var(--font-mono);}
+
+  /* ---------- CTA ---------- */
+  .cta-section{
+    position:relative;border-radius:28px;overflow:hidden;
+    padding:80px 40px;text-align:center;
+    background:linear-gradient(160deg,#0a1424 0%, #0c1830 55%, #081a22 100%);
+    border:1px solid var(--border-bright);
+    margin:0 28px;
+  }
+  .cta-section::before{
+    content:'';position:absolute;inset:-40%;
+    background:radial-gradient(circle at 30% 20%, rgba(59,130,246,0.28), transparent 55%),
+               radial-gradient(circle at 75% 75%, rgba(34,211,238,0.2), transparent 50%);
+    animation:ctaSpin 16s linear infinite;
+  }
+  @keyframes ctaSpin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+  .cta-section > *{position:relative;z-index:1;}
+  .cta-section h2{margin-bottom:14px;}
+  .cta-section p{color:var(--text-muted);margin-bottom:34px;font-size:16.5px;}
+  .cta-actions{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;}
+
+  /* ---------- Contact ---------- */
+  .contact-grid{display:grid;grid-template-columns:1.2fr 0.8fr;gap:50px;}
+  .form-card{
+    background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:36px;
+  }
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px;}
+  .field{display:flex;flex-direction:column;gap:8px;margin-bottom:18px;}
+  .field label{font-size:13px;color:var(--text-muted);font-weight:500;}
+  .field input, .field select, .field textarea{
+    background:rgba(255,255,255,0.03);
+    border:1px solid var(--border);
+    border-radius:9px;
+    padding:12px 14px;
+    color:var(--text);
+    font-family:var(--font-body);
+    font-size:14.5px;
+    transition:border-color .2s ease, background .2s ease;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus{
+    outline:none;border-color:var(--border-bright);background:rgba(255,255,255,0.05);
+  }
+  .field textarea{resize:vertical;min-height:110px;}
+  .field.error input, .field.error select, .field.error textarea{border-color:#f87171;}
+  .field-error{font-size:12px;color:#f87171;min-height:14px;}
+  .form-status{
+    margin-top:6px;padding:14px 16px;border-radius:10px;font-size:13.5px;display:none;
+  }
+  .form-status.show{display:block;}
+  .form-status.success{background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.3);color:#6ee7b7;}
+  .form-status.fail{background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.3);color:#fca5a5;}
+
+  .contact-info{display:flex;flex-direction:column;gap:24px;}
+  .info-card{
+    background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:26px;
+  }
+  .info-row{display:flex;align-items:center;gap:12px;padding:10px 0;font-size:14.5px;color:var(--text-muted);}
+  .info-row .ic{width:34px;height:34px;border-radius:8px;background:rgba(59,130,246,0.12);border:1px solid rgba(90,165,255,0.25);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--blue-bright);font-size:15px;}
+  .quick-actions{display:flex;gap:12px;margin-top:20px;flex-wrap:wrap;}
+
+  /* ---------- Footer ---------- */
+  footer{border-top:1px solid var(--border);padding:60px 0 30px;}
+  .footer-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:40px;margin-bottom:50px;}
+  .footer-brand p{color:var(--text-muted);font-size:14px;margin-top:14px;max-width:280px;}
+  .footer-col h4{font-size:13px;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:16px;font-family:var(--font-mono);font-weight:500;}
+  .footer-col a{display:block;padding:6px 0;color:var(--text-muted);font-size:14.5px;transition:color .2s ease;}
+  .footer-col a:hover{color:var(--blue-bright);}
+  .footer-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:26px;border-top:1px solid var(--border);flex-wrap:wrap;gap:14px;}
+  .footer-bottom p{color:var(--text-dim);font-size:13px;}
+  .socials{display:flex;gap:10px;}
+  .social-btn{
+    width:36px;height:36px;border-radius:9px;background:var(--card);border:1px solid var(--border);
+    display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:13px;transition:all .2s ease;
+  }
+  .social-btn:hover{border-color:var(--border-bright);color:var(--blue-bright);transform:translateY(-2px);}
+
+  /* ---------- Focus visibility ---------- */
+  a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible{
+    outline:2px solid var(--blue-bright);outline-offset:2px;
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width:980px){
+    .nav-links{display:none;}
+    .nav-actions .btn-primary{display:none;}
+    .hamburger{display:flex;}
+    .hero{grid-template-columns:1fr;padding-top:140px;}
+    .hero-visual{height:380px;margin-top:20px;}
+    .grid-3,.grid-4{grid-template-columns:repeat(2,1fr);}
+    .process-track{grid-template-columns:repeat(2,1fr);row-gap:44px;}
+    .process-track::before,.process-line-fill{display:none;}
+    .about-grid{grid-template-columns:1fr;}
+    .portrait{max-width:320px;margin:0 auto;}
+    .stats-grid{grid-template-columns:repeat(2,1fr);}
+    .contact-grid{grid-template-columns:1fr;}
+    .footer-grid{grid-template-columns:1fr;gap:30px;}
+  }
+  @media (max-width:600px){
+    .grid-3,.grid-4,.grid-2{grid-template-columns:1fr;}
+    .form-row{grid-template-columns:1fr;}
+    .cta-section{padding:56px 24px;margin:0 16px;}
+    .wrap{padding:0 20px;}
+    .stats-grid{grid-template-columns:1fr 1fr;}
+    .hero-actions .btn{flex:1;}
+  }
+</style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+<div class="glow-orb glow-1"></div>
+<div class="glow-orb glow-2"></div>
+
+<!-- NAVBAR -->
+<header id="siteHeader">
+  <div class="wrap nav-inner">
+    <a href="#home" class="logo">
+      <span class="logo-mark">HWS</span>
+      <span>
+        Hussain Web Solutions
+        <span class="logo-sub">web development studio</span>
+      </span>
+    </a>
+    <nav class="nav-links">
+      <a href="#home">Home</a>
+      <a href="#services">Services</a>
+      <a href="#projects">Projects</a>
+      <a href="#about">About</a>
+      <a href="#process">Process</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <div class="nav-actions">
+      <a href="#contact" class="btn btn-primary btn-sm">Start a Project</a>
+      <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#home">Home</a>
+  <a href="#services">Services</a>
+  <a href="#projects">Projects</a>
+  <a href="#about">About</a>
+  <a href="#process">Process</a>
+  <a href="#contact">Contact</a>
+  <a href="#contact" class="btn btn-primary" style="margin-top:10px;">Start a Project</a>
+</div>
+
+<main>
+  <!-- HERO -->
+  <section class="hero wrap" id="home">
+    <div>
+      <div class="eyebrow reveal in">Web Development Studio</div>
+      <h1 class="hero-headline reveal in">We Build Digital Experiences That <span class="accent">Help Businesses Grow.</span></h1>
+      <p class="hero-sub reveal in" style="transition-delay:.1s;">Hussain Web Solutions creates modern websites and powerful web applications for businesses, startups and professionals.</p>
+      <div class="hero-actions reveal in" style="transition-delay:.2s;">
+        <a href="#contact" class="btn btn-primary">Start a Project</a>
+        <a href="#projects" class="btn btn-ghost">View Our Work</a>
+      </div>
+      <div class="trust-label reveal in" style="transition-delay:.3s;">
+        <span class="dot"></span>
+        Web Development Studio · Gilgit, Pakistan
+      </div>
+    </div>
+
+    <div class="hero-visual reveal in" style="transition-delay:.15s;">
+      <div class="terminal">
+        <div class="terminal-bar">
+          <span></span><span></span><span></span>
+          <span class="terminal-title">hussain-web-solutions.js</span>
+        </div>
+        <div class="terminal-body" id="typedTerminal"></div>
+      </div>
+      <div class="float-card fc1">
+        <div class="label">Status</div>
+        <div class="value" style="color:#34d399;">Deployed ✓</div>
+      </div>
+      <div class="float-card fc2">
+        <div class="label">Stack</div>
+        <div class="value">Next.js</div>
+      </div>
+      <div class="float-card fc3">
+        <div class="label">Performance</div>
+        <div class="value">98 / 100</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section class="section" id="services">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="eyebrow">What We Build</div>
+        <h2>Digital solutions designed around your goals</h2>
+        <p class="section-desc">From business websites to custom web applications, we build digital solutions designed around your goals.</p>
+      </div>
+      <div class="grid grid-3">
+        <div class="card reveal">
+          <div class="service-icon">◆</div>
+          <h3>Website Development</h3>
+          <p>Modern, responsive websites designed to represent your business professionally.</p>
+        </div>
+        <div class="card reveal" style="transition-delay:.05s;">
+          <div class="service-icon">⚛</div>
+          <h3>React.js Development</h3>
+          <p>Interactive and scalable web interfaces using modern React.js development practices.</p>
+        </div>
+        <div class="card reveal" style="transition-delay:.1s;">
+          <div class="service-icon">▲</div>
+          <h3>Next.js Development</h3>
+          <p>Fast, SEO-friendly and high-performance websites and web applications with Next.js.</p>
+        </div>
+        <div class="card reveal" style="transition-delay:.15s;">
+          <div class="service-icon">◈</div>
+          <h3>WordPress Development</h3>
+          <p>Professional WordPress websites customized to your business requirements.</p>
+        </div>
+        <div class="card reveal" style="transition-delay:.2s;">
+          <div class="service-icon">🛒</div>
+          <h3>E-commerce Development</h3>
+          <p>Modern online stores designed to provide a smooth shopping experience.</p>
+        </div>
+        <div class="card reveal" style="transition-delay:.25s;">
+          <div class="service-icon">▤</div>
+          <h3>Responsive Web Design</h3>
+          <p>Websites that look and work perfectly across desktop, tablet and mobile devices.</p>
+        </div>
+        <div class="card reveal" style="transition-delay:.3s;">
+          <div class="service-icon">⟳</div>
+          <h3>Website Maintenance</h3>
+          <p>Continuous updates, improvements, bug fixes and performance optimization.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TECHNOLOGIES -->
+  <section class="section-tight border-top">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="eyebrow">Toolkit</div>
+        <h2>Technologies we work with</h2>
+      </div>
+      <div class="tech-grid reveal">
+        <div class="tech-badge"><span class="tech-dot"></span>HTML5</div>
+        <div class="tech-badge"><span class="tech-dot"></span>CSS3</div>
+        <div class="tech-badge"><span class="tech-dot"></span>JavaScript</div>
+        <div class="tech-badge"><span class="tech-dot"></span>React.js</div>
+        <div class="tech-badge"><span class="tech-dot"></span>Next.js</div>
+        <div class="tech-badge"><span class="tech-dot"></span>Tailwind CSS</div>
+        <div class="tech-badge"><span class="tech-dot"></span>Bootstrap</div>
+        <div class="tech-badge"><span class="tech-dot"></span>WordPress</div>
+        <div class="tech-badge"><span class="tech-dot"></span>Git</div>
+        <div class="tech-badge"><span class="tech-dot"></span>GitHub</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section class="section border-top" id="projects">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="eyebrow">Portfolio</div>
+        <h2>Selected Projects</h2>
+        <p class="section-desc">A selection of websites and digital experiences built with modern technologies.</p>
+      </div>
+      <div class="grid grid-2" id="projectGrid">
+        <!-- injected by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY CHOOSE US -->
+  <section class="section-tight border-top">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="eyebrow">Why HWS</div>
+        <h2>Why Hussain Web Solutions?</h2>
+      </div>
+      <div class="grid grid-4">
+        <div class="card reveal">
+          <div class="service-icon">✦</div>
+          <h3>Modern Design</h3>
+          <p>Clean interfaces designed for today's users.</p>
+        </div>
+        <div class="card reveal" style="transition-delay:.05s;">
+          <div class="service-icon">▦</div>
+          <h3>Responsive Everywhere</h3>
+          <p>Perfect experience across phones, tablets and desktops.</p>
+        </div>
+        <div class="card reveal" style="transition-delay:.1s;">
+          <div class="service-icon">⚡</div>
+          <h3>Performance Focused</h3>
+          <p>Fast-loading websites optimized for a smooth experience.</p>
+        </div>
+        <div class="card reveal" style="transition-delay:.15s;">
+          <div class="service-icon">◎</div>
+          <h3>Business Focused</h3>
+          <p>We don't just build websites—we build digital solutions around business goals.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROCESS -->
+  <section class="section border-top" id="process">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="eyebrow">How We Work</div>
+        <h2>A clear process, start to launch</h2>
+      </div>
+      <div class="process-track reveal" id="processTrack">
+        <div class="process-line-fill" id="processFill"></div>
+        <div class="process-step">
+          <div class="process-num">01</div>
+          <h3>Discover</h3>
+          <p>Understand your business, goals and requirements.</p>
+        </div>
+        <div class="process-step">
+          <div class="process-num">02</div>
+          <h3>Design</h3>
+          <p>Create a modern visual direction and user experience.</p>
+        </div>
+        <div class="process-step">
+          <div class="process-num">03</div>
+          <h3>Develop</h3>
+          <p>Build the website using modern technologies and clean code.</p>
+        </div>
+        <div class="process-step">
+          <div class="process-num">04</div>
+          <h3>Launch</h3>
+          <p>Test, optimize and launch your website.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="section border-top" id="about">
+    <div class="wrap about-grid">
+      <div class="reveal">
+        <div class="portrait">
+          <div class="portrait-inner">
+            <div class="avatar-mark">HA</div>
+            <img src="./hussain.png" alt="">
+            
+          </div>
+        </div>
+      </div>
+      <div class="reveal" style="transition-delay:.1s;">
+        <div class="eyebrow">Meet the Developer</div>
+        <h2>Hussain Abbas — Founder &amp; Web Developer</h2>
+        <p class="section-desc" style="max-width:560px;">I'm a web developer focused on creating modern, responsive and user-friendly websites and web applications. Through Hussain Web Solutions, I help businesses and professionals build a stronger presence online.</p>
+        <div class="about-skills">
+          <span class="skill-pill">HTML</span>
+          <span class="skill-pill">CSS</span>
+          <span class="skill-pill">JavaScript</span>
+          <span class="skill-pill">React.js</span>
+          <span class="skill-pill">Next.js</span>
+          <span class="skill-pill">Tailwind CSS</span>
+          <span class="skill-pill">Bootstrap</span>
+          <span class="skill-pill">WordPress</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <section class="section-tight border-top">
+    <div class="wrap">
+      <div class="stats-grid">
+        <div class="stat-card reveal">
+          <div class="stat-num">20+</div>
+          <div class="stat-label">Projects</div>
+        </div>
+        <div class="stat-card reveal" style="transition-delay:.05s;">
+          <div class="stat-num">10+</div>
+          <div class="stat-label">Technologies</div>
+        </div>
+        <div class="stat-card reveal" style="transition-delay:.1s;">
+          <div class="stat-num">100%</div>
+          <div class="stat-label">Responsive</div>
+        </div>
+        <div class="stat-card reveal" style="transition-delay:.15s;">
+          <div class="stat-num">24/7</div>
+          <div class="stat-label">Online Support</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="section border-top">
+  <div class="wrap">
+
+    <div class="section-head reveal">
+      <div class="eyebrow">Client Feedback</div>
+      <h2>What Our Clients Say</h2>
+      <p style="color:var(--text-muted);max-width:620px;">
+        We focus on clean design, reliable development and
+        digital experiences that help businesses grow online.
+      </p>
+    </div>
+
+    <div class="grid grid-3">
+
+      <!-- Testimonial 1 -->
+      <div class="testi-card reveal">
+
+        <div style="margin-bottom:18px;">
+          <span style="font-size:18px;">★★★★★</span>
+        </div>
+
+        <p class="testi-quote">
+          “Hussain Web Solutions delivered a clean and responsive
+          website with a modern look. The communication was clear
+          and the overall development process was smooth.”
+        </p>
+
+        <div class="testi-who">
+
+          <div class="testi-avatar">
+            BM
+          </div>
+
+          <div>
+            <div class="testi-name">
+              Business Website Client
+            </div>
+
+            <div style="
+              color:var(--text-muted);
+              font-size:13px;
+              margin-top:4px;
+            ">
+              Website Development
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- Testimonial 2 -->
+      <div
+        class="testi-card reveal"
+        style="transition-delay:.05s;"
+      >
+
+        <div style="margin-bottom:18px;">
+          <span style="font-size:18px;">★★★★★</span>
+        </div>
+
+        <p class="testi-quote">
+          “The website looks professional on both mobile and
+          desktop. Hussain understood the requirements and
+          turned the idea into a simple, user-friendly website.”
+        </p>
+
+        <div class="testi-who">
+
+          <div class="testi-avatar">
+            WE
+          </div>
+
+          <div>
+            <div class="testi-name">
+              Web Project Client
+            </div>
+
+            <div style="
+              color:var(--text-muted);
+              font-size:13px;
+              margin-top:4px;
+            ">
+              Responsive Web Design
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- Testimonial 3 -->
+      <div
+        class="testi-card reveal"
+        style="transition-delay:.1s;"
+      >
+
+        <div style="margin-bottom:18px;">
+          <span style="font-size:18px;">★★★★★</span>
+        </div>
+
+        <p class="testi-quote">
+          “A professional approach from start to finish. The
+          attention to responsive design, performance and clean
+          UI made the final result look polished and modern.”
+        </p>
+
+        <div class="testi-who">
+
+          <div class="testi-avatar">
+            WD
+          </div>
+
+          <div>
+            <div class="testi-name">
+              Development Client
+            </div>
+
+            <div style="
+              color:var(--text-muted);
+              font-size:13px;
+              margin-top:4px;
+            ">
+              Web Development
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</section>
+  <!-- CTA -->
+  <section class="section-tight">
+    <div class="cta-section reveal">
+      <h2>Have a Project in Mind?</h2>
+      <p>Let's turn your idea into a modern digital experience.</p>
+      <div class="cta-actions">
+        <a href="#contact" class="btn btn-primary">Start Your Project</a>
+        <a href="#contact" class="btn btn-ghost">Contact Us</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="section" id="contact">
+  <div class="wrap">
+
+    <div class="section-head reveal">
+      <div class="eyebrow">Get In Touch</div>
+      <h2>Let's Build Something Great</h2>
+    </div>
+
+    <div class="contact-grid">
+
+      <!-- CONTACT FORM -->
+      <form
+        class="form-card reveal"
+        id="contactForm"
+        novalidate
+      >
+
+        <!-- Web3Forms Configuration -->
+        <input
+          type="hidden"
+          name="access_key"
+          value="c08dbad8-447f-4897-9ac4-5af7f1befaf5"
+        >
+
+        <input
+          type="hidden"
+          name="subject"
+          value="New Project Inquiry - Hussain Web Solutions"
+        >
+
+        <input
+          type="hidden"
+          name="from_name"
+          value="Hussain Web Solutions"
+        >
+
+        <!-- Full Name + Email -->
+        <div class="form-row">
+
+          <div class="field" id="field-name">
+            <label for="fullName">
+              Full Name
+            </label>
+
+            <input
+              type="text"
+              id="fullName"
+              name="fullName"
+              placeholder="Your full name"
+              autocomplete="name"
+            >
+
+            <span class="field-error"></span>
+          </div>
+
+
+          <div class="field" id="field-email">
+            <label for="email">
+              Email
+            </label>
+
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="you@example.com"
+              autocomplete="email"
+            >
+
+            <span class="field-error"></span>
+          </div>
+
+        </div>
+
+
+        <!-- Phone + Project Type -->
+        <div class="form-row">
+
+          <div class="field" id="field-phone">
+            <label for="phone">
+              Phone
+            </label>
+
+            <input
+              type="tel"
+              id="phone"
+              name="phone"
+              placeholder="03XXXXXXXXX"
+              autocomplete="tel"
+            >
+
+            <span class="field-error"></span>
+          </div>
+
+
+          <div class="field" id="field-projectType">
+            <label for="projectType">
+              Project Type
+            </label>
+
+            <select
+              id="projectType"
+              name="projectType"
+            >
+
+              <option style="color: #04070d;" value="">
+                Select a project type
+              </option>
+
+              <option style="color: #04070d;" value="Business Website">
+                Business Website
+              </option>
+
+              <option style="color: #04070d;" value="Web Application">
+                Web Application
+              </option>
+
+              <option style="color: #04070d;"  value="E-commerce Store">
+                E-commerce Store
+              </option>
+
+              <option style="color: #04070d;" value="WordPress Site">
+                WordPress Site
+              </option>
+
+              <option style="color: #04070d;"  value="Website Maintenance">
+                Website Maintenance
+              </option>
+
+              <option style="color: #04070d;" value="Other">
+                Other
+              </option>
+
+            </select>
+
+            <span class="field-error"></span>
+          </div>
+
+        </div>
+
+
+        <!-- Budget -->
+        <div
+          class="field"
+          id="field-budget"
+        >
+
+          <label for="budget">
+            Budget
+          </label>
+
+          <select
+            id="budget"
+            name="budget"
+          >
+
+            <option style="color: #04070d;" value="">
+              Select a budget range
+            </option>
+
+            <option style="color: #04070d;" value="Under PKR 50,000">
+              Under PKR 50,000
+            </option>
+
+            <option style="color: #04070d;" value="PKR 50,000 - 150,000">
+              PKR 50,000 - 150,000
+            </option>
+
+            <option style="color: #04070d;" value="PKR 150,000 - 400,000">
+              PKR 150,000 - 400,000
+            </option>
+
+            <option style="color: #04070d;" value="Above PKR 400,000">
+              Above PKR 400,000
+            </option>
+
+            <option style="color: #04070d;" value="Not sure yet">
+              Not sure yet
+            </option>
+
+          </select>
+
+          <span class="field-error"></span>
+
+        </div>
+
+
+        <!-- Message -->
+        <div
+          class="field"
+          id="field-message"
+        >
+
+          <label for="message">
+            Message
+          </label>
+
+          <textarea
+            id="message"
+            name="message"
+            placeholder="Tell us a bit about your project..."
+            rows="6"
+          ></textarea>
+
+          <span class="field-error"></span>
+
+        </div>
+
+
+        <!-- Submit Button -->
+        <button
+          type="submit"
+          class="btn btn-primary"
+          style="width:100%;"
+          id="submitBtn"
+        >
+          Send Project Inquiry
+        </button>
+
+
+        <!-- Form Status -->
+        <div
+          class="form-status"
+          id="formStatus"
+          role="status"
+          aria-live="polite"
+        ></div>
+
+      </form>
+
+
+      <!-- CONTACT INFORMATION -->
+      <div
+        class="contact-info reveal"
+        style="transition-delay:.1s;"
+      >
+
+        <!-- Company Info -->
+        <div class="info-card">
+
+          <h3 style="margin-bottom:4px;">
+            Hussain Web Solutions
+          </h3>
+
+          <p
+            style="
+              color:var(--text-muted);
+              font-size:14px;
+              margin-bottom:18px;
+            "
+          >
+            Gilgit, Pakistan
+          </p>
+
+
+          <div class="info-row">
+            <span class="ic">📞</span>
+            <a href="tel:+923555960875">
+              03555960875
+            </a>
+          </div>
+
+
+          <div class="info-row">
+            <span class="ic">📱</span>
+
+            <a
+              href="https://wa.me/923168440875"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              03168440875 (WhatsApp)
+            </a>
+
+          </div>
+
+
+          <div class="info-row">
+            <span class="ic">✉️</span>
+
+            <a href="mailto:arbabhussan63@gmail.com">
+              arbabhussan63@gmail.com
+            </a>
+
+          </div>
+
+
+          <!-- Quick Actions -->
+          <div class="quick-actions">
+
+            <a
+              class="btn btn-ghost btn-sm"
+              href="https://wa.me/923168440875"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              WhatsApp Us
+            </a>
+
+
+            <a
+              class="btn btn-ghost btn-sm"
+              href="mailto:arbabhussan63@gmail.com"
+            >
+              Email Us
+            </a>
+
+          </div>
+
+        </div>
+
+
+        <!-- Response Time -->
+        <div class="info-card">
+
+          <h3
+            style="
+              font-size:15.5px;
+              margin-bottom:10px;
+            "
+          >
+            Response Time
+          </h3>
+
+          <p
+            style="
+              color:var(--text-muted);
+              font-size:14px;
+            "
+          >
+            We typically reply to project inquiries within 24 hours.
+          </p>
+
+        </div>
+
+
+        <!-- Services -->
+        <div class="info-card">
+
+          <h3
+            style="
+              font-size:15.5px;
+              margin-bottom:10px;
+            "
+          >
+            What We Build
+          </h3>
+
+          <p
+            style="
+              color:var(--text-muted);
+              font-size:14px;
+              line-height:1.8;
+            "
+          >
+            Business Websites · Web Applications ·
+            React.js · Next.js · WordPress ·
+            E-commerce · Responsive Web Design
+          </p>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</section>
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="logo">
+          <span class="logo-mark">HWS</span>
+          <span>Hussain Web Solutions</span>
+        </div>
+        <p>We Design. We Develop. We Deliver.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Navigate</h4>
+        <a href="#home">Home</a>
+        <a href="#services">Services</a>
+        <a href="#projects">Projects</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <a href="#">Privacy Policy</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Hussain Web Solutions. All rights reserved.</p>
+      <div class="socials">
+        <a class="social-btn" href="#" aria-label="Facebook" title="Facebook (placeholder link)">f</a>
+        <a class="social-btn" href="#" aria-label="Instagram" title="Instagram (placeholder link)">ig</a>
+        <a class="social-btn" href="#" aria-label="LinkedIn" title="LinkedIn (placeholder link)">in</a>
+        <a class="social-btn" href="#" aria-label="GitHub" title="GitHub (placeholder link)">gh</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  // =========================================================
+  // HUSSAIN WEB SOLUTIONS
+  // Main JavaScript
+  // =========================================================
+
+
+  // =========================================================
+  // 1. HEADER SCROLL STATE
+  // =========================================================
+
+  const header = document.getElementById("siteHeader");
+
+  function onScroll() {
+    if (!header) return;
+
+    if (window.scrollY > 20) {
+      header.classList.add("scrolled");
+    } else {
+      header.classList.remove("scrolled");
+    }
+  }
+
+  window.addEventListener("scroll", onScroll, {
+    passive: true,
+  });
+
+  onScroll();
+
+
+  // =========================================================
+  // 2. MOBILE MENU
+  // =========================================================
+
+  const hamburger = document.getElementById("hamburgerBtn");
+  const mobileMenu = document.getElementById("mobileMenu");
+
+  if (hamburger && mobileMenu) {
+    hamburger.addEventListener("click", function () {
+      const open = mobileMenu.classList.toggle("open");
+
+      hamburger.classList.toggle("open", open);
+
+      hamburger.setAttribute(
+        "aria-expanded",
+        open ? "true" : "false"
+      );
+
+      document.body.style.overflow = open ? "hidden" : "";
+    });
+
+    mobileMenu.querySelectorAll("a").forEach(function (link) {
+      link.addEventListener("click", function () {
+        mobileMenu.classList.remove("open");
+        hamburger.classList.remove("open");
+
+        hamburger.setAttribute(
+          "aria-expanded",
+          "false"
+        );
+
+        document.body.style.overflow = "";
+      });
+    });
+  }
+
+
+  // =========================================================
+  // 3. REVEAL ON SCROLL
+  // =========================================================
+
+  const revealEls = document.querySelectorAll(".reveal");
+
+  const io = new IntersectionObserver(
+    function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("in");
+          io.unobserve(entry.target);
+        }
+      });
+    },
+    {
+      threshold: 0.12,
+    }
+  );
+
+  revealEls.forEach(function (element) {
+    io.observe(element);
+  });
+
+
+  // =========================================================
+  // 4. PROCESS LINE ANIMATION
+  // =========================================================
+
+  const processTrack = document.getElementById("processTrack");
+  const processFill = document.getElementById("processFill");
+
+  if (processTrack && processFill) {
+    const procIo = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            processFill.style.width = "88%";
+            procIo.unobserve(entry.target);
+          }
+        });
+      },
+      {
+        threshold: 0.3,
+      }
+    );
+
+    procIo.observe(processTrack);
+  }
+
+
+  // =========================================================
+  // 5. TERMINAL TYPING EFFECT
+  // =========================================================
+
+  const terminalEl = document.getElementById("typedTerminal");
+
+  if (terminalEl) {
+    const lines = [
+      'const studio = {',
+      '  name: <span class="c3">"Hussain Web Solutions"</span>,',
+      '  founder: <span class="c3">"Hussain Abbas"</span>,',
+      '  stack: [<span class="c3">"Next.js"</span>, <span class="c3">"React"</span>, <span class="c3">"WordPress"</span>],',
+      '  location: <span class="c3">"Gilgit, Pakistan"</span>',
+      '};',
+      '',
+      '<span class="c1">// We Design. We Develop. We Deliver.</span>',
+      'studio.<span class="c2">deliver</span>();',
+    ];
+
+    function typeTerminal() {
+      let html = "";
+      let lineIndex = 0;
+
+      terminalEl.innerHTML = "";
+
+      function step() {
+        if (lineIndex >= lines.length) {
+          terminalEl.innerHTML =
+            html + '<span class="cursor"></span>';
+
+          return;
+        }
+
+        const raw = lines[lineIndex];
+
+        html +=
+          (lineIndex > 0 ? "\n" : "") +
+          raw;
+
+        terminalEl.innerHTML =
+          html.replace(/\n/g, "<br>") +
+          '<span class="cursor"></span>';
+
+        lineIndex++;
+
+        setTimeout(
+          step,
+          raw === "" ? 120 : 220
+        );
+      }
+
+      step();
+    }
+
+    typeTerminal();
+  }
+
+
+  // =========================================================
+  // 6. PROJECT DATA
+  // =========================================================
+
+  const projects = [
+    {
+      name: "Business Website",
+      desc: "A polished, conversion-focused website built to represent a growing business online.",
+      tags: ["React.js", "Responsive Design"],
+      hasRepo: true,
+    },
+
+    {
+      name: "Modern SaaS Platform",
+      desc: "A fast, SEO-friendly product marketing site and dashboard shell built with Next.js.",
+      tags: ["Next.js", "JavaScript"],
+      hasRepo: true,
+    },
+
+    {
+      name: "E-commerce Website",
+      desc: "A custom WordPress storefront designed for a smooth, mobile-friendly shopping experience.",
+      tags: ["WordPress", "Responsive Design"],
+      hasRepo: false,
+    },
+
+    {
+      name: "Portfolio Website",
+      desc: "A clean personal portfolio built with modern web technologies for a fast, lightweight experience.",
+      tags: ["HTML", "CSS", "JavaScript"],
+      hasRepo: true,
+    },
+  ];
+
+
+  // =========================================================
+  // 7. RENDER PROJECTS
+  // =========================================================
+
+  const grid = document.getElementById("projectGrid");
+
+  if (grid) {
+    grid.innerHTML = projects
+      .map(function (project, index) {
+        return `
+          <div
+            class="project-card reveal"
+            style="transition-delay:${(index % 2) * 0.08}s;"
+          >
+
+            <div class="project-thumb">
+              <span class="ph-code">
+                &lt;/&gt; ${project.name}
+              </span>
+            </div>
+
+            <div class="project-body">
+
+              <h3>${project.name}</h3>
+
+              <p>${project.desc}</p>
+
+              <div class="project-tags">
+                ${project.tags
+                  .map(function (tag) {
+                    return `<span class="tag">${tag}</span>`;
+                  })
+                  .join("")}
+              </div>
+
+              <div class="project-actions">
+
+                <a
+                  href="#contact"
+                  class="btn btn-ghost btn-sm"
+                >
+                  View Project
+                </a>
+
+                ${
+                  project.hasRepo
+                    ? `
+                      <a
+                        href="#"
+                        class="btn btn-ghost btn-sm"
+                      >
+                        GitHub
+                      </a>
+                    `
+                    : ""
+                }
+
+              </div>
+
+            </div>
+
+          </div>
+        `;
+      })
+      .join("");
+
+    grid.querySelectorAll(".reveal").forEach(function (element) {
+      io.observe(element);
+    });
+  }
+
+
+  // =========================================================
+  // 8. CONTACT FORM
+  // =========================================================
+
+  const form = document.getElementById("contactForm");
+  const statusEl = document.getElementById("formStatus");
+  const submitBtn = document.getElementById("submitBtn");
+
+  if (!form) {
+    console.warn("Contact form not found.");
+    return;
+  }
+
+
+  // =========================================================
+  // 9. FIELD ERROR FUNCTION
+  // =========================================================
+
+  function setError(fieldId, message) {
+    const field = document.getElementById(fieldId);
+
+    if (!field) return;
+
+    field.classList.toggle(
+      "error",
+      Boolean(message)
+    );
+
+    const errorElement =
+      field.querySelector(".field-error");
+
+    if (errorElement) {
+      errorElement.textContent =
+        message || "";
+    }
+  }
+
+
+  // =========================================================
+  // 10. FORM VALIDATION
+  // =========================================================
+
+  function validate() {
+    let valid = true;
+
+    const name =
+      form.fullName
+        ? form.fullName.value.trim()
+        : "";
+
+    const email =
+      form.email
+        ? form.email.value.trim()
+        : "";
+
+    const phone =
+      form.phone
+        ? form.phone.value.trim()
+        : "";
+
+    const projectType =
+      form.projectType
+        ? form.projectType.value
+        : "";
+
+    const message =
+      form.message
+        ? form.message.value.trim()
+        : "";
+
+
+    // NAME
+    if (name.length < 2) {
+      setError(
+        "field-name",
+        "Please enter your full name."
+      );
+
+      valid = false;
+    } else {
+      setError("field-name", "");
+    }
+
+
+    // EMAIL
+    const emailOk =
+      /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
+        email
+      );
+
+    if (!emailOk) {
+      setError(
+        "field-email",
+        "Please enter a valid email address."
+      );
+
+      valid = false;
+    } else {
+      setError("field-email", "");
+    }
+
+
+    // PHONE
+    const phoneOk =
+      /^[0-9+\-\s()]{7,20}$/.test(
+        phone
+      );
+
+    if (!phoneOk) {
+      setError(
+        "field-phone",
+        "Please enter a valid phone number."
+      );
+
+      valid = false;
+    } else {
+      setError("field-phone", "");
+    }
+
+
+    // PROJECT TYPE
+    if (!projectType) {
+      setError(
+        "field-projectType",
+        "Please select a project type."
+      );
+
+      valid = false;
+    } else {
+      setError(
+        "field-projectType",
+        ""
+      );
+    }
+
+
+    // MESSAGE
+    if (message.length < 10) {
+      setError(
+        "field-message",
+        "Please add a few details (10+ characters)."
+      );
+
+      valid = false;
+    } else {
+      setError(
+        "field-message",
+        ""
+      );
+    }
+
+
+    return valid;
+  }
+
+
+  // =========================================================
+  // 11. CONTACT FORM SUBMISSION
+  // =========================================================
+
+  form.addEventListener(
+    "submit",
+    async function (event) {
+      event.preventDefault();
+
+
+      // Clear previous status
+      if (statusEl) {
+        statusEl.classList.remove(
+          "show",
+          "success",
+          "fail"
+        );
+
+        statusEl.textContent = "";
+      }
+
+
+      // Validate
+      if (!validate()) {
+        if (statusEl) {
+          statusEl.textContent =
+            "Please fix the highlighted fields and try again.";
+
+          statusEl.classList.add(
+            "show",
+            "fail"
+          );
+        }
+
+        return;
+      }
+
+
+      // Disable button
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = "Sending...";
+      }
+
+
+      // =====================================================
+      // WEB3FORMS
+      // =====================================================
+
+      const formData = new FormData(form);
+
+      // IMPORTANT:
+      // Make sure your HTML form contains:
+      //
+      // <input
+      //   type="hidden"
+      //   name="access_key"
+      //   value="YOUR_WEB3FORMS_ACCESS_KEY"
+      // >
+      //
+      // Replace YOUR_WEB3FORMS_ACCESS_KEY
+      // with your real Web3Forms access key.
+
+
+      try {
+        const response = await fetch(
+          "https://api.web3forms.com/submit",
+          {
+            method: "POST",
+            body: formData,
+          }
+        );
+
+        const data =
+          await response.json();
+
+
+        // SUCCESS
+        if (response.ok && data.success) {
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.textContent =
+              "Send Project Inquiry";
+          }
+
+          if (statusEl) {
+            statusEl.textContent =
+              "Thanks! Your project inquiry has been received. We'll get back to you within 24 hours.";
+
+            statusEl.classList.add(
+              "show",
+              "success"
+            );
+          }
+
+          form.reset();
+
+          return;
+        }
+
+
+        // API ERROR
+        throw new Error(
+          data.message ||
+            "Unable to send your message."
+        );
+      }
+
+
+      // =====================================================
+      // ERROR
+      // =====================================================
+
+      catch (error) {
+        console.error(
+          "Contact form error:",
+          error
+        );
+
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent =
+            "Send Project Inquiry";
+        }
+
+        if (statusEl) {
+          statusEl.textContent =
+            "Sorry, your message could not be sent. Please try again or contact us directly.";
+
+          statusEl.classList.add(
+            "show",
+            "fail"
+          );
+        }
+      }
+    }
+  );
+
+})();
+</script>
+</body>
+</html>
