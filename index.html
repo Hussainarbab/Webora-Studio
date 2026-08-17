@@ -337,6 +337,20 @@
     font-family:var(--font-mono);font-size:12.5px;padding:8px 14px;border-radius:20px;
     background:var(--card);border:1px solid var(--border);color:var(--text-muted);
   }
+  .team-grid{display:grid;grid-template-columns:repeat(2, minmax(0, 1fr));gap:22px;margin-top:32px;}
+  .member-card{
+    display:flex;align-items:center;gap:18px;padding:20px;border-radius:18px;
+    background:var(--card);border:1px solid var(--border);transition:transform .25s ease, border-color .25s ease, background .25s ease;
+  }
+  .member-card:hover{transform:translateY(-3px);border-color:var(--border-bright);background:var(--card-hover);}
+  .member-portrait{
+    width:94px;height:94px;border-radius:18px;overflow:hidden;border:1px solid var(--border-bright);
+    background:linear-gradient(135deg,rgba(59,130,246,0.18),rgba(34,211,238,0.1));
+    flex-shrink:0;
+  }
+  .member-portrait img{width:100%;height:100%;object-fit:cover;}
+  .member-body h3{font-size:19px;margin-bottom:4px;}
+  .member-body p{font-size:14px;color:var(--text-muted);}
 
   /* ---------- Stats ---------- */
   .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;}
@@ -722,6 +736,30 @@
           <span class="skill-pill">Bootstrap</span>
           <span class="skill-pill">WordPress</span>
         </div>
+      </div>
+    </div>
+
+    <div class="wrap reveal" style="margin-top:26px;">
+      <div class="team-grid">
+        <article class="member-card">
+          <div class="member-portrait">
+            <img src="./hussain.png" alt="Hussain Abbas">
+          </div>
+          <div class="member-body">
+            <h3>Hussain Abbas</h3>
+            <p>Founder &amp; Web Developer</p>
+          </div>
+        </article>
+
+        <article class="member-card">
+          <div class="member-portrait">
+            <img src="./img1.jfif" alt="Md Antor Mia">
+          </div>
+          <div class="member-body">
+            <h3>Md Antor Mia</h3>
+            <p>Developer</p>
+          </div>
+        </article>
       </div>
     </div>
   </section>
